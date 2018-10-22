@@ -19,7 +19,7 @@
 <stringAttribute key="modelBehaviorNext" value=""/>
 <stringAttribute key="modelBehaviorSpec" value="Spec"/>
 <intAttribute key="modelBehaviorSpecType" value="1"/>
-<stringAttribute key="modelBehaviorVars" value="low, temp, t, pc, high, mid"/>
+<stringAttribute key="modelBehaviorVars" value="low, temp, l, r, t, pc, high, mid"/>
 <stringAttribute key="modelComments" value=""/>
 <booleanAttribute key="modelCorrectnessCheckDeadlock" value="true"/>
 <listAttribute key="modelCorrectnessInvariants"/>
@@ -29,7 +29,8 @@
 <stringAttribute key="modelExpressionEval" value=""/>
 <stringAttribute key="modelParameterActionConstraint" value=""/>
 <listAttribute key="modelParameterConstants">
-<listEntry value="N;;6;0;0"/>
+<listEntry value="N;;4;0;0"/>
+<listEntry value="MAXINT;;4;0;0"/>
 </listAttribute>
 <stringAttribute key="modelParameterContraint" value=""/>
 <listAttribute key="modelParameterDefinitions"/>
