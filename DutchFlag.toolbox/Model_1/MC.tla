@@ -2,23 +2,23 @@
 EXTENDS DutchFlag, TLC
 
 \* CONSTANT definitions @modelParameterConstants:0N
-const_154021272820584000 == 
+const_154021482252392000 == 
 4
 ----
 
 \* CONSTANT definitions @modelParameterConstants:1MAXINT
-const_154021272820585000 == 
+const_154021482252393000 == 
 4
 ----
 
 \* SPECIFICATION definition @modelBehaviorSpec:0
-spec_154021272820586000 ==
+spec_154021482252394000 ==
 Spec
 ----
 \* PROPERTY definition @modelCorrectnessProperties:0
-prop_154021272820587000 ==
+prop_154021482252395000 ==
 Termination
 ----
 =============================================================================
 \* Modification History
-\* Created Mon Oct 22 14:52:08 CEST 2018 by lirandepira
+\* Created Mon Oct 22 15:27:02 CEST 2018 by lirandepira

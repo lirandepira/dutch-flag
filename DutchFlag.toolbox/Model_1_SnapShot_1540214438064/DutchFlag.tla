@@ -18,7 +18,9 @@ variables t \in [1..N->0..MAXINT];           (* Array of N integers in 0..MAXINT
           right = N;
                    
 (* Main *)
-{        
+{
+    print <<t>>;    
+        
     while (mid <= right) {
       assert(left <= mid);
       assert(mid <= right);
@@ -41,8 +43,6 @@ variables t \in [1..N->0..MAXINT];           (* Array of N integers in 0..MAXINT
             };
         };
       };
-          print <<t>>;    
-      
           assert( \E i \in 1..N : \A j \in 1..N : j < i => t[j] <= low );
           assert( \E i \in 1..N : \A j \in 1..N : j > i => t[j] >= high );
           
@@ -66,25 +66,29 @@ Init == (* Global variables *)
         /\ pc = "Lbl_1"
 
 Lbl_1 == /\ pc = "Lbl_1"
+         /\ PrintT(<<t>>)
+         /\ pc' = "Lbl_2"
+         /\ UNCHANGED << t, low, high, mid, temp, left, right >>
+
+Lbl_2 == /\ pc = "Lbl_2"
          /\ IF mid <= right
                THEN /\ Assert((left <= mid), 
-                              "Failure of assertion at line 23, column 7.")
+                              "Failure of assertion at line 25, column 7.")
                     /\ Assert((mid <= right), 
-                              "Failure of assertion at line 24, column 7.")
+                              "Failure of assertion at line 26, column 7.")
                     /\ IF /\ low < t[mid] /\ t[mid] < high
                           THEN /\ mid' = mid + 1
-                               /\ pc' = "Lbl_1"
+                               /\ pc' = "Lbl_2"
                                /\ UNCHANGED << t, temp >>
                           ELSE /\ IF t[mid] <= low
                                      THEN /\ temp' = t[mid]
                                           /\ t' = [t EXCEPT ![mid] = t[left]]
-                                          /\ pc' = "Lbl_2"
+                                          /\ pc' = "Lbl_3"
                                      ELSE /\ temp' = t[mid]
                                           /\ t' = [t EXCEPT ![mid] = t[right]]
-                                          /\ pc' = "Lbl_3"
+                                          /\ pc' = "Lbl_4"
                                /\ mid' = mid
-               ELSE /\ PrintT(<<t>>)
-                    /\ Assert(( \E i \in 1..N : \A j \in 1..N : j < i => t[j] <= low ), 
+               ELSE /\ Assert(( \E i \in 1..N : \A j \in 1..N : j < i => t[j] <= low ), 
                               "Failure of assertion at line 46, column 11.")
                     /\ Assert(( \E i \in 1..N : \A j \in 1..N : j > i => t[j] >= high ), 
                               "Failure of assertion at line 47, column 11.")
@@ -92,20 +96,20 @@ Lbl_1 == /\ pc = "Lbl_1"
                     /\ UNCHANGED << t, mid, temp >>
          /\ UNCHANGED << low, high, left, right >>
 
-Lbl_2 == /\ pc = "Lbl_2"
+Lbl_3 == /\ pc = "Lbl_3"
          /\ t' = [t EXCEPT ![left] = temp]
          /\ left' = left + 1
          /\ mid' = mid + 1
-         /\ pc' = "Lbl_1"
+         /\ pc' = "Lbl_2"
          /\ UNCHANGED << low, high, temp, right >>
 
-Lbl_3 == /\ pc = "Lbl_3"
+Lbl_4 == /\ pc = "Lbl_4"
          /\ t' = [t EXCEPT ![right] = temp]
          /\ right' = right - 1
-         /\ pc' = "Lbl_1"
+         /\ pc' = "Lbl_2"
          /\ UNCHANGED << low, high, mid, temp, left >>
 
-Next == Lbl_1 \/ Lbl_2 \/ Lbl_3
+Next == Lbl_1 \/ Lbl_2 \/ Lbl_3 \/ Lbl_4
            \/ (* Disjunct to prevent deadlock on termination *)
               (pc = "Done" /\ UNCHANGED vars)
 
@@ -117,5 +121,5 @@ Termination == <>(pc = "Done")
 \* END TRANSLATION
 =============================================================================
 \* Modification History
-\* Last modified Mon Oct 22 15:26:57 CEST 2018 by lirandepira
+\* Last modified Mon Oct 22 15:20:10 CEST 2018 by lirandepira
 \* Created Thu Oct 18 11:31:21 CEST 2018 by lirandepira
