@@ -16,8 +16,6 @@ variables t \in [1..N->0..2];           (* Array of N integers in 0..MAXINT *)
 (* Main *)
 {
 
-    print <<t>>;
-
     low := 1;
     high := N;     
         
@@ -41,7 +39,7 @@ variables t \in [1..N->0..2];           (* Array of N integers in 0..MAXINT *)
             };
         };
       };
-          assert( /\ \E i \in 1..N /\ \E j \in 1..N : (i < j) => t[i] <= t[j])      
+            
     }
 }
 *)
@@ -60,7 +58,6 @@ Init == (* Global variables *)
         /\ pc = "Lbl_1"
 
 Lbl_1 == /\ pc = "Lbl_1"
-         /\ PrintT(<<t>>)
          /\ low' = 1
          /\ high' = N
          /\ pc' = "Lbl_2"
@@ -80,9 +77,7 @@ Lbl_2 == /\ pc = "Lbl_2"
                                           /\ t' = [t EXCEPT ![mid] = t[high]]
                                           /\ pc' = "Lbl_4"
                                /\ mid' = mid
-               ELSE /\ Assert(( /\ \E i \in 1..N /\ \E j \in 1..N : (i < j) => t[i] <= t[j]), 
-                              "Failure of assertion at line 44, column 11.")
-                    /\ pc' = "Done"
+               ELSE /\ pc' = "Done"
                     /\ UNCHANGED << t, mid, temp >>
          /\ UNCHANGED << low, high >>
 
@@ -111,5 +106,5 @@ Termination == <>(pc = "Done")
 \* END TRANSLATION
 =============================================================================
 \* Modification History
-\* Last modified Mon Oct 22 14:15:18 CEST 2018 by lirandepira
+\* Last modified Mon Oct 22 13:59:56 CEST 2018 by lirandepira
 \* Created Thu Oct 18 11:31:21 CEST 2018 by lirandepira

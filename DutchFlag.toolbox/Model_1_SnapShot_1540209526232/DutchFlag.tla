@@ -2,12 +2,13 @@
 EXTENDS Naturals, TLC
 
 CONSTANT N      (* Size of arrays *)
+CONSTANT MAXINT (* Max integer value *)
 
 (* PlusCal options (-termination) *)
 
 (*
 --algorithm DutchFlag {
-variables t \in [1..N->0..2];           (* Array of N integers in 0..MAXINT *)
+variables t \in [1..N->0..MAXINT];           (* Array of N integers in 0..MAXINT *)
           low \in 1..N;                                  (* This is the biggest red *)
           high \in 1..N;                                 (* This is the smallest blue *)
           mid = 1;
@@ -15,8 +16,6 @@ variables t \in [1..N->0..2];           (* Array of N integers in 0..MAXINT *)
                    
 (* Main *)
 {
-
-    print <<t>>;
 
     low := 1;
     high := N;     
@@ -41,18 +40,19 @@ variables t \in [1..N->0..2];           (* Array of N integers in 0..MAXINT *)
             };
         };
       };
-          assert( /\ \E i \in 1..N /\ \E j \in 1..N : (i < j) => t[i] <= t[j])      
+            
     }
 }
 *)
 
 \* BEGIN TRANSLATION
-VARIABLES t, low, high, mid, temp, pc
+VARIABLES t, x, low, high, mid, temp, pc
 
-vars == << t, low, high, mid, temp, pc >>
+vars == << t, x, low, high, mid, temp, pc >>
 
 Init == (* Global variables *)
-        /\ t \in [1..N->0..2]
+        /\ t \in [1..N->0..MAXINT]
+        /\ x \in 0..MAXINT
         /\ low \in 1..N
         /\ high \in 1..N
         /\ mid = 1
@@ -60,11 +60,10 @@ Init == (* Global variables *)
         /\ pc = "Lbl_1"
 
 Lbl_1 == /\ pc = "Lbl_1"
-         /\ PrintT(<<t>>)
          /\ low' = 1
          /\ high' = N
          /\ pc' = "Lbl_2"
-         /\ UNCHANGED << t, mid, temp >>
+         /\ UNCHANGED << t, x, mid, temp >>
 
 Lbl_2 == /\ pc = "Lbl_2"
          /\ IF mid <= high
@@ -80,24 +79,22 @@ Lbl_2 == /\ pc = "Lbl_2"
                                           /\ t' = [t EXCEPT ![mid] = t[high]]
                                           /\ pc' = "Lbl_4"
                                /\ mid' = mid
-               ELSE /\ Assert(( /\ \E i \in 1..N /\ \E j \in 1..N : (i < j) => t[i] <= t[j]), 
-                              "Failure of assertion at line 44, column 11.")
-                    /\ pc' = "Done"
+               ELSE /\ pc' = "Done"
                     /\ UNCHANGED << t, mid, temp >>
-         /\ UNCHANGED << low, high >>
+         /\ UNCHANGED << x, low, high >>
 
 Lbl_3 == /\ pc = "Lbl_3"
          /\ t' = [t EXCEPT ![low] = temp]
          /\ low' = low + 1
          /\ mid' = mid + 1
          /\ pc' = "Lbl_2"
-         /\ UNCHANGED << high, temp >>
+         /\ UNCHANGED << x, high, temp >>
 
 Lbl_4 == /\ pc = "Lbl_4"
          /\ t' = [t EXCEPT ![high] = temp]
          /\ high' = high - 1
          /\ pc' = "Lbl_2"
-         /\ UNCHANGED << low, mid, temp >>
+         /\ UNCHANGED << x, low, mid, temp >>
 
 Next == Lbl_1 \/ Lbl_2 \/ Lbl_3 \/ Lbl_4
            \/ (* Disjunct to prevent deadlock on termination *)
@@ -111,5 +108,5 @@ Termination == <>(pc = "Done")
 \* END TRANSLATION
 =============================================================================
 \* Modification History
-\* Last modified Mon Oct 22 14:15:18 CEST 2018 by lirandepira
+\* Last modified Mon Oct 22 13:57:59 CEST 2018 by lirandepira
 \* Created Thu Oct 18 11:31:21 CEST 2018 by lirandepira
